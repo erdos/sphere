@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+
+  </head>
+  <body>
+    <div id="app">
+      <h2>Loading</h2>
+      <p>Please wait...</p>
+    </div>
+    <div id="docs">
+      <h1>Documentation</h1>
+      <p>Drag the sphere with your mouse to rotate it.</p>
+      <h1>Syntax</h1>
+
+      <p>You create geometric constructions by writing valid sentences of the following syntax.</p>
+
+      <h2>Valid sentences:</h2>
+
+      <ul>
+        <li><code><i>name</i> is <b>construction</b></code>
+        <li><code><i>name</i> is hidden <b>construction</b></code>
+        <li><code>draw <b>construction</b></code>
+      </ul>
+
+      <p>A <code><b>construction</b></code> is one of the followings:</p>
+      <ul>
+        <!--<li><code>free point</code>-->
+        <li><code>point at NUMBER NUMBER NUMBER</code>
+        <li><code>intersection of <i>name</i> and <i>name</i></code>
+        <li><code>segment between <i>name</i> and <i>name</i></code>
+      </ul>
+      <p>Each sentence may have an optinal suffix: <code>with color COLOR size NUMBER</code></p>
+
+<p>A <code><i>name</i></code> is a name of an object. It consists of alphanumerals and digits.</p>
+
+      <p>For example, the following sentences are valid:</p>
+
+
+      <pre>draw point at 0.2 0.3 0.4
+p is point at 3 4 -2 with color red
+q is hidden point at 3 2 1
+draw segment between p and q
+</pre>
+    </div>
+    <script src="main.js" type="text/javascript"></script>
+  </body>
+</html>
