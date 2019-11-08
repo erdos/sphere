@@ -3,7 +3,7 @@
                :refer [atom]]
               [erdos.lenart.common :as c
                :refer [*style* *zoom* format
-                       pressed? hover selected construction editor-text]]
+                       pressed? hover selected construction editor-text error-msg]]
               [erdos.lenart.math :as m :refer
                [sin atan2 rad->deg
                 deg->rad unit clockwise?]]
@@ -37,7 +37,7 @@
 
 (defatom= cursor
   (when-let [[x y] @screen-cursor]
-     (m/euclidean->spherical @projection x y)))
+    (m/euclidean->spherical @projection x y)))
 
 ;; TODO: impl this
 (defn drag-object! "Evt handler. should modify state." [id location] nil)
@@ -52,22 +52,25 @@
               (m/dist-angle (m/unit x') (m/unit x)))))))
 
 (add-watch pressed? :click
- (fn [_ _ _ x]
+           (fn [_ _ _ x]
    (if x
      (when (and (not @selected) @hover)
        (reset! selected @hover))
-     (reset! selected nil))))
+     (do (reset! selected nil)
+         (reset! screen-cursor nil)))))
 
 
 (defn on-mouse-move "evt handler" [e]
-                                        ;  (.log js/console e)
-  (.log js/console "moved")
-  (let [q (doto (obj-> e target ownerSVGElement (createSVGPoint))
+  (let [svg (or (obj-> e target ownerSVGElement) (.-target e))
+        q (doto (.createSVGPoint svg)
             (-> .-x (set! (.-clientX e)))
             (-> .-y (set! (.-clientY e))))
         p (obj-> q (matrixTransform (obj-> e target (getScreenCTM) (inverse))))]
     (reset! screen-cursor
-            [(/ (.-x p) *zoom*) (/ (.-y p) *zoom*)])))
+            [(/ (.-x p) *zoom*) (/ (.-y p) *zoom*)])
+
+    nil
+    ))
 
 ;;[:b [:h1 "asdsad" tyty]]
 
@@ -78,7 +81,8 @@
   (let [size 420
         pt (memoize (fn [x] (m/rotate x @arcball)))]
     [:svg {:width size :height size
-           :style {:touch-action "none"}}
+           :style {:touch-action "none"}
+           }
      [:defs
 
       [:pattern {:id "diag" :patternUnits "userSpaceOnUse" :width 4 :heigt 4}
@@ -94,15 +98,12 @@
        [:stop {:offset "100%" :style {:stop-color "#eeeeee"}}]]]
      [:g {:transform (format "translate(%d,%d)" (/ size 2) (/ size 2))
           ;:on-mouse-down #(do (reset! pressed? true) nil)
-          :on-pointer-down #(do (reset! pressed? true)
-                                (.log js/console "Pointer click")
-                                nil)
+          :on-pointer-down #(do (reset! pressed? true) nil)
           ;:on-mouse-up   #(do (reset! pressed? false) nil)
-          :on-pointer-up #(do (reset! pressed? false)
-                              (.log js/console "Pointer release")
-                              nil)
+          :on-pointer-up #(do (reset! pressed? false) nil)
           ;;:on-mouse-click (fn [e] (println e))
-          :on-pointer-move on-mouse-move}
+          :on-pointer-move on-mouse-move
+          }
       [:circle {:cx 0 :cy 0 :r *zoom* :fill "url(#grad1)" :stroke "#aaaaaa"}]
 
       [:g
@@ -138,6 +139,7 @@
       ]]))
 
 
+
 (defn editor
   "Code editor component"
   []
@@ -152,7 +154,9 @@
                :font-size :1.2em
                :min-width :300px
                :width "auto" :resize :none :border "1px solid silver" :outline :none}
-       :value @editor-text}]]))
+       :value @editor-text}]
+     ;; error messages are here
+     [:div @error-msg]]))
 
 
 (defn container []
@@ -168,10 +172,8 @@
 
 (reagent/render [container] (js/document.getElementById "app"))
 
-;; (.addEventListener js/document "touchmove" (fn [e] (.preventDefault e)))
+; (.addEventListener js/document "touchmove" (fn [e] (.preventDefault e)))
 
 '''''''((fn f [e]
    (swap! arcball m/rotate-quaternion m/up 0.02)
    (.setTimeout js/window f 50)) nil)
-
-;(.log js/console (lang/topsort {0 {} 1 {:a 0} 2 {:a 0} 3 {:a 1 :b 2} 4 {:a 3}}))

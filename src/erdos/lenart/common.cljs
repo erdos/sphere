@@ -23,6 +23,7 @@
 (defonce editor-text
   (atom "draw point at 1 2 3\ndraw point at -1 2 3"))
 
+(defonce error-msg (atom nil))
 
 
 (defatom= construction
