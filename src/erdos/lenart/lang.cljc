@@ -84,11 +84,10 @@
   (match-seq s
     [] {} ; default style maybe??
     ["color" ?c & ?xs]
-    (-> ?xs parse-style-item (assoc :color ?c))
-    ["stroke" ?s & xs]
-    (-> xs parse-style-item (assoc :stroke ?s))
-    ["visibility" ?v & xs]
-    (-> xs parse-style-item (assoc :hidden ?v))))
+    (-> ?xs parse-style-item (assoc :color ?c)) ;; color
+    ["size" ?s & ?xs]
+    (-> ?xs parse-style-item (assoc :size ?s)) ;; stroke width
+    ))
 
 (defn parse-style [s]
   (match-seq s
