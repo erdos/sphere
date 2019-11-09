@@ -45,10 +45,11 @@
                            :fill (c/color->backface (:fill *style*)))]
     [:g
      (doall
-      (for [x (reverse @state/construction)]
+      (for [x (reverse @state/construction)
+            :when (not (:hidden x true))]
         (-> (case (:type x)
               :segment (create-segment-backface  (pt (:from x)) (pt (:to x)))
-              :point   (create-point (:id x) (m/mirror (pt  (:loc x))))
+              :point   (create-point (:id x) (m/mirror (pt (:loc x))))
               :great-circle (create-great-circle-backface (pt (:origin x)))
               :polygon (create-poly-backface (map pt (:pts x)))
               nil)
@@ -59,7 +60,8 @@
    (doall
     (for [t [:polygon :great-circle :segment :point]
           x @state/construction
-          :when (= t (:type x))]
+          :when (= t (:type x))
+          :when (not (:hidden x true))]
       (-> (case (:type x)
             :segment (create-segment (pt (:from x)) (pt (:to x)))
             :point   (create-point (:id x) (pt (:loc x)))
@@ -85,3 +87,5 @@
       [:circle {:cx 0 :cy 0 :r *zoom* :fill "url(#grad1)" :stroke "#aaaaaa"}]
       (backface pt)
       (frontface pt)]]))
+
+:ok
