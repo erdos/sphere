@@ -1,18 +1,25 @@
 (ns erdos.lenart.lang
-  (:require [erdos.lenart.math :as m])
+  (:require [erdos.lenart.geo :as geo])
   #?(:cljs (:require-macros [erdos.lenart.macros
                             :refer [match-seq]])
      :clj (:require [erdos.lenart.macros
                      :refer [match-seq]])))
 
+(defn- deps [m x]
+  (let [mx (m x)]
+    (remove nil?
+            (list* (:from mx)
+                   (:to mx)
+                   (:a mx)
+                   (:b mx)
+                   (:origin mx)
+                   (:on mx)
+                   (concat (:pts mx))))))
 
 (defn topsort
   "Creates a processing order in the map"
-  [m]
-  (let [deps (fn [x] (let [mx (m x)]
-                       (remove nil?
-                               (list* (:from mx) (:to mx) (:a mx) (:b mx) (:origin mx) (:on mx) (concat (:pts mx))))))
-        k->deps (zipmap (keys m) (map deps (keys m)))
+  [deps m]
+  (let [k->deps (zipmap (keys m) (map (partial deps m) (keys m)))
         no-deps (map key (filter (comp empty? val) k->deps))
         others (set (remove (set no-deps) (keys k->deps)))]
     (loop [out (vec no-deps)
@@ -21,42 +28,6 @@
         (when-let [kk (seq (remove  #(some others (k->deps %)) others))]
           (recur (into out kk) (reduce disj others kk)))
         out))))
-
-(defmulti eval-geo (fn [acc x] (:type x)))
-
-(defmethod eval-geo :default [acc x]
-  (assert false (str "unexpected " x)))
-
-(defmethod eval-geo :point [acc x] x)
-
-(defmethod eval-geo :segment
-  [acc x]
-  (let [fl (-> x :from acc :loc)
-        tl (-> x :to acc :loc)]
-    (assoc x :from fl :to tl)))
-
-;; TODO: handle first, second, nth intersections!
-(defmethod eval-geo :intersection [acc x]
-  (cond
-    (= :great-circle (-> x :a acc :type) (-> x :b acc :type))
-    (let [loc1 (-> x :a acc :origin)
-          loc2 (-> x :b acc :origin)
-          loc (m/cross loc1 loc2)]
-      (.log js/console (str "intersect> " loc))
-      {:type :point
-       :loc  loc
-       :id   (:id x)
-       :hidden false})))
-
-(defmethod eval-geo :great-circle
-  [acc x]
-  (let [o (-> x :origin acc :loc)]
-    (assoc x :origin o)))
-
-(defmethod eval-geo :polygon
-  [acc x]
-  (let [xs (->> x :pts (map acc) (map :loc))]
-    (assoc x :pts xs)))
 
 (declare parse-sentence)
 
@@ -67,12 +38,12 @@
 
 
 (defn parse-book [ls]
-  (let [ls  (.split ls "\n")
+  (let [ls  (map #(.trim %) (.split ls "\n"))
         xs  (keep parse-sentence- ls)
         m   (zipmap (map :id xs) xs)
-        top (topsort m)]
+        top (topsort deps m)]
     (-> (reduce (fn [acc x]
-               (let [e (eval-geo acc (m x))]
+               (let [e (geo/eval-geo acc (m x))]
                  (assoc acc (:id e) e))) {} top)
          (mapv top))))
 
@@ -145,6 +116,9 @@
                                 :loc [(str->num ?x)
                                       (str->num ?y)
                                       (str->num ?z)]))
+
+    ["midpoint" "of" ?name1 "and" ?name2 & rest]
+    (-> rest parse-style (assoc :type :midpoint :a ?name1 :b ?name2))
 
     ["intersection" "of" ?name1 "and" ?name2 & rest]
     (-> rest parse-style (assoc :type :intersection :a ?name1 :b ?name2))

@@ -51,6 +51,11 @@
    (- (* az bx) (* ax bz))
    (- (* ax by) (* ay bx))])
 
+(defn mean [[ax ay az] [bx by bz]]
+  [(/ (+ ax bx) 2)
+   (/ (+ ay by) 2)
+   (/ (+ az bz) 2)])
+
 (defn det [[ax ay az] [bx by bz] [cx cy cz]]
   (- (+ (* ax by cz)
         (* ay bz cx)
