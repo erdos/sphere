@@ -4,3 +4,21 @@
 
 code > i{color: brown}
 code > b{color: purple}
+
+div#Container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch
+}
+
+div#Sphere {
+    display: inline-block;
+    flex-basis: "440px"
+}
+
+div#Editor {
+    display: inline-block;
+}

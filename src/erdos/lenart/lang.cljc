@@ -33,6 +33,12 @@
         tl (-> x :to acc :loc)]
     (assoc x :from fl :to tl)))
 
+;; TODO: handle first, second, nth intersections!
+(defmethod eval-geo :intersection [acc x]
+  {:type :point
+   :loc [1 2 3]
+   })
+
 (defmethod eval-geo :great-circle
   [acc x]
   (let [o (-> x :origin acc :loc)]
@@ -111,26 +117,29 @@
 
 (defn str->num [x]
   #?(:cljs (.parseFloat js/Number x)
-           :clj (Double/parseDouble x)))
+     :clj  (Double/parseDouble x)))
 
 (defn parse-construction [s]
   (assert (sequential? s))
   (match-seq s
-                                        ;    ["free" "point"] nil ; not implemented
-             ["polygon" "of" & ?rest]
-             (let [[a1 a2] (split-with (partial not= "with") ?rest)]
-               (-> a2 parse-style
-                   (assoc :type :polygon :pts (vec a1)
-                    )))
-             ["great" "circle" "of" ?x & rest]
+
+    ["polygon" "of" & ?rest]
+    (let [[a1 a2] (split-with (partial not= "with") ?rest)]
+      (-> a2 parse-style
+          (assoc :type :polygon :pts (vec a1))))
+
+    ["great" "circle" "of" ?x & rest]
     (-> rest parse-style (assoc :type :great-circle :origin ?x))
+
     ["point" "at" ?x ?y ?z & rest]
     (-> rest parse-style (assoc :type :point
                                 :loc [(str->num ?x)
                                       (str->num ?y)
                                       (str->num ?z)]))
+
     ["intersection" "of" ?name1 "and" ?name2 & rest]
     (-> rest parse-style (assoc :type :intersection :a ?name1 :b ?name2))
+
     ["segment" "between" ?from "and" ?to & rest]
     (-> rest parse-style (assoc :type :segment :from ?from :to ?to))
     ;;,,{:type :segment :from ?name1 :to ?name2}

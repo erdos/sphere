@@ -4,8 +4,10 @@
     :refer [defatom= obj-> template]])
   (:require
    [goog.string] [goog.string.format]
-   [reagent.core :as reagent :refer [atom]]
-   [erdos.lenart.lang :as lang]))
+   [erdos.lenart.lang :as lang]
+     [erdos.lenart.math :as m :refer
+               [sin atan2 rad->deg
+                deg->rad unit clockwise?]]))
 
 
 (defn geo-cube []
@@ -19,18 +21,6 @@
     {:type :segment :from p :to q}))
 
 (defn avg [a b] (/ (+ a b) 2))
-
-(defonce editor-text
-  (atom "draw point at 1 2 3\ndraw point at -1 2 3"))
-
-(defonce error-msg (atom nil))
-
-
-(defatom= construction
-  (do ;(println "working..")
-   (lang/parse-book @editor-text)))
-
-;;(.log js/console "common")
 
 (def default-style
      {:stroke "black"
@@ -47,11 +37,6 @@
 
 (defn format [s & args]
   (apply goog.string.format s args))
-
-
-(def pressed? (atom false))
-(def hover    (atom nil)) ;; id of hovered object(s)
-(def selected (atom nil)) ;; like hover
 
 (defn color->rgba-
   [code]
@@ -94,8 +79,6 @@
 
 (def color-darker (memoize color-darker-))
 
-(.log js/console (color->backface "blue"))
-
 (defn poly [d]
   (assert (string? d))
   [:path {:d d
@@ -130,9 +113,3 @@
           ;(template "M%,% L%,%" x0 y0 x1 y1)
           (format "M%.4f,%.4f L%.4f,%.4f" x0 y0 x1 y1)
           }])
-
-
-(comment
-
-
-  )

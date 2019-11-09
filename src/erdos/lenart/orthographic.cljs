@@ -1,9 +1,9 @@
 (ns erdos.lenart.orthographic
   (:require [erdos.lenart.common :as c
-             :refer [*style* *zoom* format arc third]]
+             :refer [*style* *zoom* format arc]]
+            [erdos.lenart.state :as state]
             [erdos.lenart.math :as m
              :refer [atan2 sin cos sqrt rad->deg unit cross up clockwise?]]))
-
 
 (defn create-great-circle [aa]
   (let [[ax ay az :as aa] (m/unit aa)
@@ -23,17 +23,14 @@
   (create-great-circle (m/mirror aa)))
 
 
-(defn create-point [pt]
+(defn create-point [id pt]
   (let [[x y z] (m/unit pt)
-        r (:point-size *style* 5)
-        id -2]
+        r  (:point-size *style* 5)]
     (when (pos? z)
       [:rect {:x (- (* x *zoom*) r) :y (- (* y *zoom*) r)
               :width (* 2 r) :height (* 2 r)
-              :on-mouse-over
-              #(reset! c/hover id)
-              :on-mouse-out
-              #(reset! c/hover nil)
+              :on-mouse-over #(reset! state/hover id)
+              :on-mouse-out #(reset! state/hover nil)
               :fill (:point-color *style* "red")
               :stroke :red}])))
 
