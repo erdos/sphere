@@ -47,13 +47,17 @@
      (doall
       (for [x (reverse @state/construction)
             :when (not (:hidden x true))]
-        (-> (case (:type x)
-              :segment (create-segment-backface  (pt (:from x)) (pt (:to x)))
-              :point   (create-point (:id x) (m/mirror (pt (:loc x))))
-              :great-circle (create-great-circle-backface (pt (:origin x)))
-              :polygon (create-poly-backface (map pt (:pts x)))
-              nil)
-            (with-meta {:key (:id x)}))))]))
+        (binding [*style* (assoc *style*
+                                 :fill (c/color->backface (:color x "blue"))
+                                 :stroke (c/color->backface (:color x "black"))
+                                 :stroke-width (:size x 2))]
+          (-> (case (:type x)
+                :segment (create-segment-backface  (pt (:from x)) (pt (:to x)))
+                :point   (create-point (:id x) (m/mirror (pt (:loc x))))
+                :great-circle (create-great-circle-backface (pt (:origin x)))
+                :polygon (create-poly-backface (map pt (:pts x)))
+                nil)
+              (with-meta {:key (:id x)})))))]))
 
 (defn- frontface [pt]
   [:g
@@ -62,13 +66,17 @@
           x @state/construction
           :when (= t (:type x))
           :when (not (:hidden x true))]
-      (-> (case (:type x)
-            :segment (create-segment (pt (:from x)) (pt (:to x)))
-            :point   (create-point (:id x) (pt (:loc x)))
-            :great-circle (create-great-circle (pt (:origin x)))
-            :polygon (create-poly (map pt (:pts x)))
-            nil)
-          (with-meta {:key (:id x)}))))])
+      (binding [*style* (assoc *style*
+                               :fill (:color x "blue")
+                               :stroke (:color x "black")
+                               :stroke-width (:size x 2))]
+        (-> (case (:type x)
+              :segment (create-segment (pt (:from x)) (pt (:to x)))
+              :point   (create-point (:id x) (pt (:loc x)))
+              :great-circle (create-great-circle (pt (:origin x)))
+              :polygon (create-poly (map pt (:pts x)))
+              nil)
+            (with-meta {:key (:id x)})))))])
 
 (defn gr
   "Sphere display component"

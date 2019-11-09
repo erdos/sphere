@@ -48,7 +48,6 @@
                           (re-seq #"\d+(?:\.\d+)?" c))] [r g b (or a 1.0)])))
 
 (defonce color->rgba (memoize color->rgba-))
-;(def color->backface (memoize color->backface))
 (defn mean [a b] (/ (+ a b) 2))
 
 (defn mean2 [a b] (/ (+ a b b b b b) 6))
@@ -102,7 +101,7 @@
               x0 y0 w h ang f0 f1 x1 y1)
     ;(format "M%.4f,%.4f A%.4f,%.4f %.4f %d,%d %.4f,%.4f" x0 y0 w h ang f0 f1 x1 y1)
     :fill   "none";(:fill *style* "none"),
-    :stroke (:stroke *style* "green")
+    :stroke       (:stroke *style* "black")
     :stroke-width (:stroke-width *style* 1)}])
 
 (defn line [x0 y0 x1 y1]
