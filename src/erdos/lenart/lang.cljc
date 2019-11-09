@@ -68,7 +68,7 @@
       [?id "is" & ?xs]
       (-> ?xs (parse-construction) (assoc :id ?id :hidden false))
       ["draw" & ?xs]
-      (-> ?xs (parse-construction) (assoc :id (gensym) :hidden true)))))
+      (-> ?xs (parse-construction) (assoc :id (gensym) :hidden false)))))
 
 (comment
   (parse-sentence "x is hidden segment from 1 to 2"
