@@ -14,6 +14,13 @@ div#Container {
     align-content: stretch
 }
 
+div#Loading {
+    display: block;
+    text-align: center;
+    width: 200px;
+    margin: 0 auto;
+}
+
 div#Sphere {
     display: inline-block;
     flex-basis: "440px"
@@ -22,3 +29,5 @@ div#Sphere {
 div#Editor {
     display: inline-block;
 }
+
+div#docs {max-width: 800px; margin-left: auto; margin-right: auto}

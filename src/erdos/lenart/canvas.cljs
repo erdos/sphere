@@ -57,7 +57,9 @@
 (defn- frontface [pt]
   [:g
    (doall
-    (for [x @state/construction]
+    (for [t [:polygon :great-circle :segment :point]
+          x @state/construction
+          :when (= t (:type x))]
       (-> (case (:type x)
             :segment (create-segment (pt (:from x)) (pt (:to x)))
             :point   (create-point (:id x) (pt (:loc x)))
@@ -69,7 +71,7 @@
 (defn gr
   "Sphere display component"
   []
-  (let [size 420
+  (let [size 400
         pt (memoize (fn [x] (m/rotate x @state/arcball)))]
     [:svg {:width size :height size :style {:touch-action "none"}}
      defs

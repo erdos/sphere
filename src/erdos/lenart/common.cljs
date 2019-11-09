@@ -31,7 +31,7 @@
 
 (def ^:dynamic *style* default-style)
 
-(def ^:dynamic *zoom* 200.0)
+(def ^:dynamic *zoom* 192.0)
 ;; (def ^:dynamic *rotation*) ;; not used yet.
 
 
