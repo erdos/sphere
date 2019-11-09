@@ -1,8 +1,9 @@
 (ns erdos.lenart.lang
+  (:require [erdos.lenart.math :as m])
   #?(:cljs (:require-macros [erdos.lenart.macros
                             :refer [match-seq]])
-           :clj (:require [erdos.lenart.macros
-                           :refer [match-seq]])))
+     :clj (:require [erdos.lenart.macros
+                     :refer [match-seq]])))
 
 
 (defn topsort
@@ -27,6 +28,7 @@
   (assert false (str "unexpected " x)))
 
 (defmethod eval-geo :point [acc x] x)
+
 (defmethod eval-geo :segment
   [acc x]
   (let [fl (-> x :from acc :loc)
@@ -35,9 +37,16 @@
 
 ;; TODO: handle first, second, nth intersections!
 (defmethod eval-geo :intersection [acc x]
-  {:type :point
-   :loc [1 2 3]
-   })
+  (cond
+    (= :great-circle (-> x :a acc :type) (-> x :b acc :type))
+    (let [loc1 (-> x :a acc :origin)
+          loc2 (-> x :b acc :origin)
+          loc (m/cross loc1 loc2)]
+      (.log js/console (str "intersect> " loc))
+      {:type :point
+       :loc  loc
+       :id   (:id x)
+       :hidden false})))
 
 (defmethod eval-geo :great-circle
   [acc x]
