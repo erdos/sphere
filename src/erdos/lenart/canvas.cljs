@@ -14,14 +14,14 @@
         (:require-macros [erdos.lenart.macros
                       :refer [defatom= obj->]]))
 
-(defn on-mouse-move "evt handler" [e]
-  (let [svg (or (obj-> e target ownerSVGElement) (.-target e))
+(defn on-mouse-move "evt handler" [^js/MouseEvent e]
+  (let [e-target ^js/SVGElement (.-target e)
+        svg (or (.-ownerSVGElement e-target) e-target)
         q (doto (.createSVGPoint svg)
             (-> .-x (set! (.-clientX e)))
             (-> .-y (set! (.-clientY e))))
-        p (obj-> q (matrixTransform (obj-> e target (getScreenCTM) (inverse))))]
-    (reset! state/screen-cursor
-            [(/ (.-x p) *zoom*) (/ (.-y p) *zoom*)])
+        p (.matrixTransform q (-> e-target (.getScreenCTM) (.inverse)))]
+    (reset! state/screen-cursor [(/ (.-x p) *zoom*) (/ (.-y p) *zoom*)])
     nil))
 
 (def defs

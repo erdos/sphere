@@ -36,5 +36,7 @@
         (cljs :source-map true
               :optimizations :none)))
 
-(deftask build []
-  (cljs :optimizations :advanced))
+(deftask production []
+  (comp (cljs :optimizations :advanced
+              :compiler-options {:externs ["externs.js"]})
+        (target)))
