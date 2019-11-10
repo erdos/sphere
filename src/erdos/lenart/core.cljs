@@ -20,13 +20,6 @@
    [:textarea
     {:on-change on-editor-text-change
      :rows (count (seq (.split @editor-text "\n")))
-     :style {:font-family "Times"
-             :font-size :1.2em
-             :min-width :300px
-             :width "auto"
-             :resize :none
-             :border "1px solid silver"
-             :outline :none}
      :value @editor-text}]
    ;; error messages are here
    [:div @error-msg]

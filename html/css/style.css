@@ -1,7 +1,16 @@
-/* some style */
-
 a, a:visited, a:active, a:hover {color: blue; text-decoration: underline;}
 a:hover {text-decoration: none;}
+
+textarea {
+    white-space: nowrap;
+    font-family: "Times";
+    font-size: 1.2em;
+    min-width: 300px;
+    width: "auto";
+    resize: none;
+    border: "1px solid silver";
+    outline: none;
+}
 
 code > i{color: brown}
 code > b{color: purple}
