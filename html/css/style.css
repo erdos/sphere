@@ -1,9 +1,18 @@
 a, a:visited, a:active, a:hover {color: blue; text-decoration: underline;}
 a:hover {text-decoration: none;}
 
+h1 {font-size: 1.8em;}
+h2 {font-size: 1.2em}
+
+
+body, textarea {
+    font-family: TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif;
+    background: white; color: black;
+}
+
 textarea {
     white-space: nowrap;
-    font-family: "Times";
+
     font-size: 1.2em;
     min-width: 340px;
     width: auto;
@@ -33,7 +42,8 @@ div#Loading {
 
 div#Sphere {
     display: inline-block;
-    flex-basis: "440px"
+    flex-basis: "440px";
+    position: relative;
 }
 
 div#Editor {
@@ -53,3 +63,24 @@ div#Error {
 div#docs {max-width: 800px; margin-left: auto; margin-right: auto}
 
 label.ui {user-select: none;}
+
+div#Hand {position: absolute;
+          top: 180px;
+          font-size: 3em;
+          user-select: none;
+          left: 50%;
+animation-name: example;
+animation-duration: 6s;
+animation-fill-mode: forwards;
+animation-timing-function: ease-in-out;
+         }
+
+/* Standard syntax */
+@keyframes example {
+    0% {left: 40%;}
+    20% {left: 50%;}
+    40% {left: 40%;}
+    60% {left: 50%;}
+    80% {left: 40%;}
+    100% {left: 45%; display: none;}
+}

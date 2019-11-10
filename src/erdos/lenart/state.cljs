@@ -16,8 +16,10 @@
          "z is great circle of Z with color lime"
          )))
 
+(def arcball0 (m/->Quaternion 0 0 0 1.0))
+
 (defonce arcball ; "Contains rotation information"
-  (atom (m/->Quaternion 0 0 0 1.0)))
+  (atom arcball0))
 
 (defatom= construction-raw
   (lang/parse-book @editor-text))
