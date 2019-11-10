@@ -39,3 +39,8 @@
         loc2 (-> x :b acc :origin)
         loc  (m/cross loc1 loc2)]
     (assoc x :type :point :loc  loc)))
+
+#_
+(defmethod intersection :default [acc x]
+  nil ;; ERROR: wrong params. maybe do not exist?X
+  )

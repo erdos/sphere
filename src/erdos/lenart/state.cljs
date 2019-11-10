@@ -38,7 +38,6 @@
 
 
 (defn drag-object! "Evt handler. should modify state." [id location] nil)
-;((fn-> println) 5)
 
 (defatom= cursor
   (when-let [[x y] @screen-cursor]

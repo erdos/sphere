@@ -47,37 +47,21 @@
                  (assoc acc (:id e) e))) {} top)
          (mapv top))))
 
-; (parse-book "a is point at 1 2 3\nb is point at 3 4 5\ndraw segment between a and b")
-
-
 (defn tokenize-sentence [s]
   (assert (string? s))
   (seq (.split s " ")))
-
-(defn tokenize-sentences [s]
-  (assert (string? s))
-  (map tokenize-sentence (seq (.split s "\n"))))
 
 (declare parse-construction)
 
 (defn parse-sentence [s]
   (let [s (if (vector? s) s (tokenize-sentence s))]
     (match-seq s
-      [?id "is" "hidden" & ?xs]
-      (-> ?xs (parse-construction) (assoc :id ?id :hidden true))
-      [?id "is" & ?xs]
-      (-> ?xs (parse-construction) (assoc :id ?id :hidden false))
-      ["draw" & ?xs]
-      (-> ?xs (parse-construction) (assoc :id (gensym) :hidden false)))))
-
-(comment
-  (parse-sentence "x is hidden segment from 1 to 2"
-   )
-
-
-
-
-  )
+               [?id "is" "hidden" & ?xs]
+               (-> ?xs (parse-construction) (assoc :id ?id :hidden true))
+               [?id "is" & ?xs]
+               (-> ?xs (parse-construction) (assoc :id ?id :hidden false))
+               ["draw" & ?xs]
+               (-> ?xs (parse-construction) (assoc :id (gensym) :hidden false)))))
 
 (defn parse-style-item [s]
   (assert (sequential? s))
@@ -89,10 +73,10 @@
     (-> ?xs parse-style-item (assoc :size ?s)) ;; stroke width
     ))
 
-(defn parse-style [s]
+(defn- parse-style [s]
   (match-seq s
-             [] {}
-             ["with" & ?style] (parse-style-item ?style)))
+     [] {}
+     ["with" & ?style] (parse-style-item ?style)))
 
 (defn str->num [x]
   #?(:cljs (.parseFloat js/Number x)
@@ -126,46 +110,3 @@
     (-> rest parse-style (assoc :type :segment :from ?from :to ?to))
     ;;,,{:type :segment :from ?name1 :to ?name2}
     (assert false (str "Not a construction: " s))))
-
-
-(comment
-
-
-
-  ;; sentence:
-  [OBJECTID is CONSTRUCTION]
-  [OBJECTID is hidden CONSTUCTION]
-  [draw CONSTRUCTION]
-
-  ;; OBJECTID: a-zA-Z0-9
-
-  ;; CONSTRUCTION
-  [free point] ;; can be moved by mouse ??
-  [point at F F F] ;; can be moved by mouse???
-  [intersection of OBJECTID and OBJECTID]
-  [segment between OBJECTID and OBJECTID]
-  ;;[great circle for OBJECTID]
-  ;;[midpoint of OBJECTID and OBJECTID]
-  ;;[polygon for OBJECTID ... OBJECTID]
-
-  ;; idea: optional suffix: with color red
-  ;; IDEA: C is A bang B with color red
-
-
-  a is point at 0.2 0.3 -0.4
-  b is point at 2 43 4
-  s1 is segment between a and b with color silver
-
-  c is point at 2 3 3
-  d is point at 4 3 2
-  s2 is segment between c d with color silver
-
-  pt is intersection of s1 and s2 with color red
-
-  ptline is great circle of pt
-
-  draw great circle of c
-  draw great circle of d
-
-
-)

@@ -8,7 +8,7 @@
     (:require-macros [erdos.lenart.macros
                       :refer [obj->]]))
 
-(enable-console-print!)
+#_ (enable-console-print!)
 
 (defn on-js-reload [])
 
@@ -30,7 +30,8 @@
              :outline :none}
      :value @editor-text}]
    ;; error messages are here
-   [:div @error-msg]])
+   [:div @error-msg]
+   #_[:div [:label.ui [:input {:type "checkbox" :value false}] [:span "Rotate sphere"]] ]])
 
 
 (defn- container []
@@ -40,9 +41,3 @@
 
 
 (reagent/render [container] (js/document.getElementById "app"))
-
-; (.addEventListener js/document "touchmove" (fn [e] (.preventDefault e)))
-
-'''''''((fn f [e]
-   (swap! arcball m/rotate-quaternion m/up 0.02)
-   (.setTimeout js/window f 50)) nil)

@@ -1,5 +1,5 @@
 (ns erdos.lenart.math
-  (:require [cljs.test :as t]))
+  #_(:require [cljs.test :as t]))
 
 (def pi 3.14159265359)
 
@@ -35,6 +35,7 @@
     (if (>= d 2.0) ;; for precisionb
       pi (-> d (/ 2.0) (asin) (* 2.0)))))
 
+#_
 (t/deftest test-dist-angle
   (t/is (= 0 (dist-angle up up)))
   (t/is (= (/ pi 2) (dist-angle [1 0 0] [0 1 0])))
@@ -81,14 +82,6 @@
   (spherical->euclidean [_ x y z] [x y z]))
 
 (def orthographic-projection (->Orthographic))
-
-(comment
-  (defrecord Stereographic [r])
-
-  (def gnomonic-projection (Stereographic. 0.0))
-  (def stereographic-projection (Stereographic 1.0))
-  )
-
 
 (defrecord Quaternion [x y z w])
 

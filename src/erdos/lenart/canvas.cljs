@@ -1,18 +1,14 @@
 (ns erdos.lenart.canvas
-      (:require [reagent.core :as reagent
-               :refer [atom]]
-              [erdos.lenart.common :as c :refer [*style* *zoom* format]]
-              [erdos.lenart.state :as state :refer [editor-text error-msg arcball construction pressed? hover selected screen-cursor]]
-              [erdos.lenart.math :as m :refer
-               [sin atan2 rad->deg
-                deg->rad unit clockwise?]]
-              [erdos.lenart.lang :as lang]
-              [erdos.lenart.orthographic
-               :refer [create-segment create-segment-backface create-point
-                       create-great-circle create-great-circle-backface
-                       create-poly create-poly-backface]])
-        (:require-macros [erdos.lenart.macros
-                      :refer [defatom= obj->]]))
+  (:require [reagent.core :as reagent :refer [atom]]
+            [erdos.lenart.common :as c :refer [*style* *zoom* format]]
+            [erdos.lenart.state :as state :refer [editor-text error-msg arcball construction pressed? hover selected screen-cursor]]
+            [erdos.lenart.math :as m]
+            [erdos.lenart.lang :as lang]
+            [erdos.lenart.orthographic
+             :refer [create-segment create-segment-backface create-point
+                     create-great-circle create-great-circle-backface
+                     create-poly create-poly-backface]])
+  (:require-macros [erdos.lenart.macros :refer [defatom=]]))
 
 (defn on-mouse-move "evt handler" [^js/MouseEvent e]
   (let [e-target ^js/SVGElement (.-target e)

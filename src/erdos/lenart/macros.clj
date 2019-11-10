@@ -21,7 +21,7 @@
                 (filter symbol?))
         f (gensym)]
     `(let [~f (fn [] ~expr)]
-       (def ~n (reagent.core/atom (~f)))
+       (def ~(with-meta n nil) (reagent.core/atom (~f)))
        ~@(for [x xs]
            (list 'add-watch x (genkwd)
                  (list 'fn '[_ _ _ _]

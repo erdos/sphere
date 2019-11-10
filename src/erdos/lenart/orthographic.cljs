@@ -31,7 +31,7 @@
               :width (* 2 r) :height (* 2 r)
               :on-mouse-over #(reset! state/hover id)
               :on-mouse-out #(reset! state/hover nil)
-              :fill (:point-color *style* "red")
+              :fill (or (:point-color *style*) (:color *style*) "red")
               :stroke :red}])))
 
 (defn- create-segment-path-goto-str [aa bb]
