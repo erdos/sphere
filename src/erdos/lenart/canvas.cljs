@@ -22,7 +22,7 @@
 
 (def defs
   [:defs
-   [:pattern {:id "diag" :patternUnits "userSpaceOnUse" :width 4 :heigt 4}
+   #_[:pattern {:id "diag" :patternUnits "userSpaceOnUse" :width 4 :heigt 4}
     [:path {:d "M-1,1 l2,-2
            M0,4 l4,-4
            M3,5 l2,-2"}]
@@ -46,6 +46,7 @@
         (binding [*style* (assoc *style*
                                  :fill (c/color->backface (:color x "blue"))
                                  :stroke (c/color->backface (:color x "black"))
+                                 :stroke-style (:stroke-style x :normal)
                                  :stroke-width (:size x 2))]
           (-> (case (:type x)
                 :segment (create-segment-backface  (pt (:from x)) (pt (:to x)))
@@ -65,6 +66,7 @@
       (binding [*style* (assoc *style*
                                :fill (:color x "blue")
                                :stroke (:color x "black")
+                               :stroke-style (:stroke-style x :normal)
                                :stroke-width (:size x 2))]
         (-> (case (:type x)
               :segment (create-segment (pt (:from x)) (pt (:to x)))

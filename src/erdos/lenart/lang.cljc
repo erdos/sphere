@@ -29,6 +29,12 @@
     (-> ?xs parse-style-item (assoc :color ?c)) ;; color
     ["size" ?s & ?xs]
     (-> ?xs parse-style-item (assoc :size ?s)) ;; stroke width
+
+    ["stroke" "dashed" & ?xs]
+    (-> ?xs parse-style-item (assoc :stroke-style :dashed))
+
+    ["stroke" "dotted" & ?xs]
+    (-> ?xs parse-style-item (assoc :stroke-style :dotted))
     ))
 
 (defn- parse-style [s]

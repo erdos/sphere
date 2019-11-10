@@ -93,6 +93,12 @@
     ;(format "M%.4f,%.4f A%.4f,%.4f %.4f %d,%d %.4f,%.4f" x0 y0 w h ang f0 f1 x1 y1)
     :fill   "none";(:fill *style* "none"),
     :stroke       (:stroke *style* "black")
+    :stroke-dasharray (case (:stroke-style *style* :normal)
+                              :dotted (str (:stroke-width *style* 2))
+                              :dashed (str (* 4 (:stroke-width *style* 2))
+                                           " "
+                                           (* 2 (:stroke-width *style* 2)))
+                              :normal nil)
     :stroke-width (:stroke-width *style* 1)}])
 
 (defn line [x0 y0 x1 y1]
