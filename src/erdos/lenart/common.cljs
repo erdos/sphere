@@ -1,15 +1,10 @@
 (ns erdos.lenart.common
-  (:require-macros
-   [erdos.lenart.macros
-    :refer [defatom= template]])
-  (:require
-   [goog.string] [goog.string.format]
-   [erdos.lenart.lang :as lang]
-     [erdos.lenart.math :as m :refer
-               [sin atan2 rad->deg
-                deg->rad unit clockwise?]]))
+  (:require-macros [erdos.lenart.macros :refer [template]])
+  (:require [goog.string] [goog.string.format]
+            [erdos.lenart.lang :as lang]
+            [erdos.lenart.math :as m]))
 
-
+#_
 (defn geo-cube []
   (for [i [-1 0 1]
         j [-1 0 1]
@@ -30,10 +25,7 @@
       :point-color "orange"})
 
 (def ^:dynamic *style* default-style)
-
 (def ^:dynamic *zoom* 192.0)
-;; (def ^:dynamic *rotation*) ;; not used yet.
-
 
 (defn format [s & args]
   (apply goog.string.format s args))
@@ -48,6 +40,7 @@
                           (re-seq #"\d+(?:\.\d+)?" c))] [r g b (or a 1.0)])))
 
 (defonce color->rgba (memoize color->rgba-))
+
 (defn mean [a b] (/ (+ a b) 2))
 
 (defn mean2 [a b] (/ (+ a b b b b b) 6))
@@ -91,8 +84,6 @@
           :fill :none
           :stroke (:stroke *style* "black")
           :stroke-width (:stroke-width *style* 3)}])
-
-(defn third [x] (nth x 2 nil))
 
 (defn arc [x0 y0, w h, ang, f0 f1, x1 y1]
   [:path

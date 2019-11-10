@@ -1,20 +1,8 @@
 (ns erdos.lenart.lang
   (:require [erdos.lenart.geo :as geo])
-  #?(:cljs (:require-macros [erdos.lenart.macros
-                            :refer [match-seq]])
-     :clj (:require [erdos.lenart.macros
-                     :refer [match-seq]])))
+  #?(:cljs (:require-macros [erdos.lenart.macros :refer [match-seq]])
+     :clj  (:require [erdos.lenart.macros :refer [match-seq]])))
 
-(defn- deps [m x]
-  (let [mx (m x)]
-    (remove nil?
-            (list* (:from mx)
-                   (:to mx)
-                   (:a mx)
-                   (:b mx)
-                   (:origin mx)
-                   (:on mx)
-                   (concat (:pts mx))))))
 
 (defn topsort
   "Creates a processing order in the map"
@@ -29,39 +17,9 @@
           (recur (into out kk) (reduce disj others kk)))
         out))))
 
-(declare parse-sentence)
-
-(defn parse-sentence- [x]
-  (try (parse-sentence x)
-       #?(:cljs (catch :default e (.log js/console e))
-          :clj  (catch Exception e (.printStackTrace e))) nil))
-
-
-(defn parse-book [ls]
-  (let [ls  (map #(.trim %) (.split ls "\n"))
-        xs  (keep parse-sentence- ls)
-        m   (zipmap (map :id xs) xs)
-        top (topsort deps m)]
-    (-> (reduce (fn [acc x]
-               (let [e (geo/eval-geo acc (m x))]
-                 (assoc acc (:id e) e))) {} top)
-         (mapv top))))
-
 (defn tokenize-sentence [s]
   (assert (string? s))
   (seq (.split s " ")))
-
-(declare parse-construction)
-
-(defn parse-sentence [s]
-  (let [s (if (vector? s) s (tokenize-sentence s))]
-    (match-seq s
-               [?id "is" "hidden" & ?xs]
-               (-> ?xs (parse-construction) (assoc :id ?id :hidden true))
-               [?id "is" & ?xs]
-               (-> ?xs (parse-construction) (assoc :id ?id :hidden false))
-               ["draw" & ?xs]
-               (-> ?xs (parse-construction) (assoc :id (gensym) :hidden false)))))
 
 (defn parse-style-item [s]
   (assert (sequential? s))
@@ -110,3 +68,39 @@
     (-> rest parse-style (assoc :type :segment :from ?from :to ?to))
     ;;,,{:type :segment :from ?name1 :to ?name2}
     (assert false (str "Not a construction: " s))))
+
+(defn parse-sentence [s]
+  (let [s (if (vector? s) s (tokenize-sentence s))]
+    (match-seq s
+               [?id "is" "hidden" & ?xs]
+               (-> ?xs (parse-construction) (assoc :id ?id :hidden true))
+               [?id "is" & ?xs]
+               (-> ?xs (parse-construction) (assoc :id ?id :hidden false))
+               ["draw" & ?xs]
+               (-> ?xs (parse-construction) (assoc :id (gensym) :hidden false)))))
+
+(defn parse-sentence- [x]
+  (try (parse-sentence x)
+       #?(:cljs (catch :default e (.log js/console e))
+          :clj  (catch Exception e (.printStackTrace e))) nil))
+
+(defn- deps [m x]
+  (let [mx (m x)]
+    (remove nil?
+            (list* (:from mx)
+                   (:to mx)
+                   (:a mx)
+                   (:b mx)
+                   (:origin mx)
+                   (:on mx)
+                   (concat (:pts mx))))))
+
+(defn parse-book [ls]
+  (let [ls  (map #(.trim %) (.split ls "\n"))
+        xs  (keep parse-sentence- ls)
+        m   (zipmap (map :id xs) xs)
+        top (topsort deps m)]
+    (-> (reduce (fn [acc x]
+                  (let [e (geo/eval-geo acc (m x))]
+                    (assoc acc (:id e) e))) {} top)
+        (mapv top))))
