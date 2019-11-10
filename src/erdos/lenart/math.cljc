@@ -8,16 +8,16 @@
 (defn rad->deg [x] (-> x (/ pi) (* 180.0)))
 (defn deg->rad [x] (-> x (/ 180.0) (* pi)))
 
-(defn sin [x] (js/Math.sin x))
-(defn cos [x] (js/Math.cos x))
-(defn sqrt [x] (js/Math.sqrt x))
+(defn sin [x] #?(:cljs (js/Math.sin x) :clj (Math/sin x)))
+(defn cos [x] #?(:cljs (js/Math.cos x) :clj (Math/cos x)))
+(defn sqrt [x] #?(:cljs (js/Math.sqrt x) :clj (Math/sqrt x)))
 
-(defn asin [x] (js/Math.asin x))
-(defn acos [x] (js/Math.acos x))
-(defn atan2 [dy dx] (js/Math.atan2 dy dx))
+(defn asin [x] (#?(:cljs js/Math.asin :clj Math/asin) x))
+(defn acos [x] (#?(:cljs js/Math.acos :clj Math/acos) x))
+(defn atan2 [dy dx] (#?(:cljs js/Math.atan2 :clj Math/atan2) dy dx))
 
 (defn unit [[x y z]]
-  (let [d (js/Math.sqrt (+ (* x x) (* y y) (* z z)))]
+  (let [d (#?(:cljs js/Math.sqrt :clj Math/sqrt) (+ (* x x) (* y y) (* z z)))]
     [(/ x d) (/ y d) (/ z d)]))
 
 (defn dot [[x y z]]
@@ -51,6 +51,9 @@
   [(- (* ay bz) (* az by))
    (- (* az bx) (* ax bz))
    (- (* ax by) (* ay bx))])
+
+(defn zero-vec? [[a b c]]
+  (and (zero? a) (zero? b) (zero? c)))
 
 (defn mean [[ax ay az] [bx by bz]]
   [(/ (+ ax bx) 2)
