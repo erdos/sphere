@@ -1,21 +1,8 @@
 (ns erdos.lenart.common
   (:require-macros [erdos.lenart.macros :refer [template]])
-  (:require [goog.string] [goog.string.format]
+  (:require [goog.string.format]
             [erdos.lenart.lang :as lang]
             [erdos.lenart.math :as m]))
-
-#_
-(defn geo-cube []
-  (for [i [-1 0 1]
-        j [-1 0 1]
-        k [-1 0 1]
-        :when (pos? (* i j k))
-        b [0 1 2]
-        :let [p [i j k]
-              q (update-in p [b] #(* -1 %))]]
-    {:type :segment :from p :to q}))
-
-(defn avg [a b] (/ (+ a b) 2))
 
 (def default-style
      {:stroke "black"

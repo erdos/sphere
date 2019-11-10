@@ -40,6 +40,16 @@ div#Editor {
     display: inline-block;
 }
 
+div#Error > h3 {margin-top: 0}
+div#Error > p {margin-bottom: 0}
+
+div#Error {
+    position: absolute;
+    border: 1px solid red;
+    background: #ffddee;
+    padding: 4px;
+}
+
 div#docs {max-width: 800px; margin-left: auto; margin-right: auto}
 
 label.ui {user-select: none;}

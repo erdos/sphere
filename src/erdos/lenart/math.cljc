@@ -2,6 +2,7 @@
   #_(:require [cljs.test :as t]))
 
 (def pi 3.14159265359)
+(def half-pi (/ pi 2))
 
 (def up [0.0 0.0 1.0])
 
@@ -16,6 +17,8 @@
 (defn acos [x] (#?(:cljs js/Math.acos :clj Math/acos) x))
 (defn atan2 [dy dx] (#?(:cljs js/Math.atan2 :clj Math/atan2) dy dx))
 
+(defn abs [x] (#?(:cljs js/Math.abs :clj Math/abs) x))
+
 (defn unit [[x y z]]
   (let [d (#?(:cljs js/Math.sqrt :clj Math/sqrt) (+ (* x x) (* y y) (* z z)))]
     [(/ x d) (/ y d) (/ z d)]))
@@ -28,6 +31,13 @@
     (+ (* ax ax) (* by by) (* cz cz))))
 
 (def dist (comp sqrt distsq))
+
+(defn small? [x] (<= x 0.00001))
+
+(defn close?
+  ([a] true)
+  ([a b] (small? (distsq a b)))
+  ([a b c] (and (close? a b) (close? b c) (close? a c))))
 
 ;; todo: test for precision
 (defn dist-angle [a b]
@@ -43,6 +53,15 @@
 
 (defn antipode [[x y z]]
   [(- x) (- y) (- z)])
+
+(def point-length (comp sqrt dot))
+
+(defn- point-scale [s [x y z]] [(* s x) (* s y) (* s z)])
+
+(defn antipodal? [a b]
+  (let [|a| (point-length a)
+        |b| (point-length b)]
+    (= a (->> b (point-scale (/ |a| |b| -1.0))))))
 
 (defn mirror [[x y z]]
   [x y (- z)])

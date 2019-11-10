@@ -1,5 +1,6 @@
 (ns erdos.lenart.lang
-  (:require [erdos.lenart.geo :as geo])
+  (:require [erdos.lenart.geo :as geo]
+            [clojure.string :refer [join]])
   #?(:cljs (:require-macros [erdos.lenart.macros :refer [match-seq]])
      :clj  (:require [erdos.lenart.macros :refer [match-seq]])))
 
@@ -13,7 +14,7 @@
     (loop [out (vec no-deps)
            others (set others)]
       (if (seq others)
-        (when-let [kk (seq (remove  #(some others (k->deps %)) others))]
+        (when-let [kk (seq (remove #(some others (k->deps %)) others))]
           (recur (into out kk) (reduce disj others kk)))
         out))))
 
@@ -35,15 +36,21 @@
 
     ["stroke" "dotted" & ?xs]
     (-> ?xs parse-style-item (assoc :stroke-style :dotted))
-    ))
+
+    {:error "Unexpected style definition!"}))
 
 (defn- parse-style [s]
   (match-seq s
      [] {}
-     ["with" & ?style] (parse-style-item ?style)))
+     ["with" & ?style] (parse-style-item ?style)
+     (throw (ex-info "Wrong style definitions!"
+                     {:error (str "Unexpected: " (join " " s))}))))
 
 (defn str->num [x]
-  #?(:cljs (.parseFloat js/Number x)
+  #?(:cljs (let [n (.parseFloat js/Number x)]
+             (if (js/isNaN n)
+               (throw (ex-info "Not a number!" {:error "Could not parse number!"}))
+               n))
      :clj  (Double/parseDouble x)))
 
 (defn parse-construction [s]
@@ -72,23 +79,28 @@
 
     ["segment" "between" ?from "and" ?to & rest]
     (-> rest parse-style (assoc :type :segment :from ?from :to ?to))
-    ;;,,{:type :segment :from ?name1 :to ?name2}
-    (assert false (str "Not a construction: " s))))
 
-(defn parse-sentence [s]
-  (let [s (if (vector? s) s (tokenize-sentence s))]
+    (throw (ex-info "Not a construction!" {:error "Not a construction!"}))))
+
+(defn parse-sentence [s-]
+  (let [s (if (vector? s-) s- (tokenize-sentence s-))]
     (match-seq s
                [?id "is" "hidden" & ?xs]
                (-> ?xs (parse-construction) (assoc :id ?id :hidden true))
                [?id "is" & ?xs]
                (-> ?xs (parse-construction) (assoc :id ?id :hidden false))
                ["draw" & ?xs]
-               (-> ?xs (parse-construction) (assoc :id (gensym) :hidden false)))))
+               (-> ?xs (parse-construction) (assoc :id (gensym) :hidden false))
+               (throw (ex-info "Unexpected line!"
+                               {:error "Unexpected line!"})))))
 
 (defn parse-sentence- [x]
-  (try (parse-sentence x)
-       #?(:cljs (catch :default e (.log js/console e))
-          :clj  (catch Exception e (.printStackTrace e))) nil))
+  (-> (try (parse-sentence x)
+           (catch #?(:cljs :default :clj Exception) e
+               (if (:error (ex-data e))
+                 (ex-data e)
+                 {:error (str "Unexpected exception: " e)})))
+      (assoc :line x)))
 
 (defn- deps [m x]
   (let [mx (m x)]
@@ -102,11 +114,18 @@
                    (concat (:pts mx))))))
 
 (defn parse-book [ls]
-  (let [ls  (map #(.trim %) (.split ls "\n"))
-        xs  (keep parse-sentence- ls)
-        m   (zipmap (map :id xs) xs)
-        top (topsort deps m)]
-    (-> (reduce (fn [acc x]
-                  (let [e (geo/eval-geo acc (m x))]
-                    (assoc acc (:id e) e))) {} top)
-        (mapv top))))
+  (let [ls  (filter seq (map #(.trim %) (.split ls "\n")))
+        xs  (keep parse-sentence- ls)]
+    (if-let [err (some #(when (:error %) %) xs)]
+      err
+      (let [m (zipmap (map :id xs) xs)]
+        (if-let [top (topsort deps m)]
+          (let [reduced (reduce (fn [acc x]
+                                  (let [e (geo/eval-geo acc (m x))]
+                                    (if (:error e)
+                                      (reduced e)
+                                      (assoc acc (:id e) e)))) {} top)]
+            (if (:error reduced)
+              reduced
+              (mapv reduced top)))
+          {:error "Error in construction: circular dependency!"})))))

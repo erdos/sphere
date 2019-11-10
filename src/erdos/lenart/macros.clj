@@ -86,12 +86,14 @@
              `(~k (nth ~b ~i)))
         ls (if rest? (butlast (butlast ls)) ls)
 
-        cnt (if (not rest?) `(= ~(count case) (count ~b)) true)]
+        cnt (if rest?
+              `(<= ~(dec (dec (count case))) (count ~b))
+              `(= ~(count case) (count ~b)))]
     (assert (or rest? cnt (seq ks)) (str "No literal in pattern: " case))
-    `(if (and ~@ks ~cnt)
+    `(if (and ~cnt ~@ks)
        (let [~@(apply concat ls)
-             ~@(if rest? `(~rest? (nthrest ~b ~(- (count case) 2))))
-             ] ~then)
+             ~@(if rest? `(~rest? (nthrest ~b ~(- (count case) 2))))]
+         ~then)
        ~else)))
 
 (defmacro match-seq [expr & clauses]

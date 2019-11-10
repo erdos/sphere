@@ -15,14 +15,20 @@
           "Z is intersection of x and y"
          )))
 
-(defonce error-msg (atom nil))
-
 (defonce arcball ; "Contains rotation information"
   (atom (m/->Quaternion 0 0 0 1.0)))
 
+(defatom= construction-raw
+  (lang/parse-book @editor-text))
+
 (defatom= construction
-  (do ;(println "working..")
-   (lang/parse-book @editor-text)))
+  (when-not (:error @construction-raw)
+    @construction-raw))
+
+(defatom= error-msg
+  (cond (:error @construction-raw)
+        @construction-raw
+       ))
 
 (def pressed? (atom false))
 (def hover    (atom nil)) ;; id of hovered object(s)
