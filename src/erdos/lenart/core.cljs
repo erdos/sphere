@@ -4,22 +4,21 @@
               [erdos.lenart.state :as state :refer [editor-text error-msg]]
               [erdos.lenart.common :as c :refer [*style* *zoom* format]]
               [erdos.lenart.lang :as lang]
-              [erdos.lenart.canvas :refer [gr]])
-    (:require-macros [erdos.lenart.macros
-                      :refer [obj->]]))
+              [erdos.lenart.canvas :refer [gr]]))
 
 #_ (enable-console-print!)
 
 (defn on-js-reload [])
 
-(defn- on-editor-text-change [x] (reset! editor-text (obj-> x target value)))
+(defn- on-editor-text-change [^js/InputEvent x]
+  (reset! editor-text (.. x -target -value)))
 
 (defn editor []
-  [:div {}
+  [:div#Editor
    [:div {:style {:position "absolute" :top 0}} (str @state/hover)]
    ;; [:pre (str @construction)]
    [:textarea
-    {:on-change  on-editor-text-change
+    {:on-change on-editor-text-change
      :rows (count (seq (.split @editor-text "\n")))
      :style {:font-family "Times"
              :font-size :1.2em
@@ -34,10 +33,6 @@
    #_[:div [:label.ui [:input {:type "checkbox" :value false}] [:span "Rotate sphere"]] ]])
 
 
-(defn- container []
-  [:div#Container
-   [:div#Sphere [gr]]
-   [:div#Editor [editor]]])
-
+(defn- container [] [:div#Container [:div#Sphere [gr]]  [editor]])
 
 (reagent/render [container] (js/document.getElementById "app"))

@@ -1,7 +1,7 @@
 (ns erdos.lenart.common
   (:require-macros
    [erdos.lenart.macros
-    :refer [defatom= obj-> template]])
+    :refer [defatom= template]])
   (:require
    [goog.string] [goog.string.format]
    [erdos.lenart.lang :as lang]

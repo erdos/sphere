@@ -107,70 +107,6 @@
                 default (reverse cls)))))
 
 
-
-(comment
-
-  (match-seq "abacus" [?a] :no false)
-  (match-seq "ab" [?a ?b] :no false)
-
-  (match-seq "abacus" [?a & ?rs] :no false)
-
-
-
-  (match-seq ["point" "at" 2 3 4 "with" "color" "red"]
-             ["point" "at" x y z & rest] rest)
-
-
-  (macroexpand
-   (quote
-    (match-seq ["point" "at" "1" "2" "3"]
-               ["point" "at" ?x ?y ?z]
-               [:pt ?x ?y ?z])))
-
-
-  (macroexpand
-   (quote
-    (match-seq "abacus"
-               ;[\a ?b] :a
-               ;[?c \b] :c
-               [?a ?b & ?bacus] ?bacus)
-    ))
-
-
-  (nthrest [] 3)
-  (match-seq (seq nil)
-             [] {} ; default style maybe??
-    ["color" ?c & ?xs]
-    :c
-    ["visibility" ?v & xs]
-    :vis)
-  )
-
-(defn- obj->1
-  [obj x]
-  (let []
-    (if (seq? x)
-      `(if-let [o# ~obj]
-         (if-let [m# (aget o# ~(name (first x)))]
-           (.call m# o# ~@(rest x))
-           (throw ~(str "no method: " (name (first x)))))
-         (throw ~(str "call on nil: " (name (first x)))))
-      `(if-let [o# ~obj]
-         (aget o# ~(name x))
-         (throw ~(str "call on nil: " (name x)))))))
-
-
-(defmacro obj-> [obj & xs]
-  (reduce obj->1 obj xs))
-
-;; (macroexpand '(obj-> 1 a b c))
-
-;; todo: add :fn clause
-;; (defmethod proc :fn [_ & xs] `(fn ~@xs))
-
-;; todo: add :recur clasue??
-;; todo: add
-
 (defmacro template [p & itms]
   ;(.log js/console (str p (type p)))
   (assert (string? p) (str "no str: " p))
@@ -179,32 +115,6 @@
             (str "arg count does not match"))
     `(str ~@(interleave ls itms))
     ) ;; idea; can parse str now
-
   )
-
-
-(comment
-
-  (defn topsort
-    "Creates a processing order in the map"
-    [m]
-  (let [deps (fn [x] (let [mx (m x)] (remove nil? [(:from mx) (:to mx) (:a mx) (:b mx)])))
-        k->deps (zipmap (keys m) (map deps (keys m)))
-        no-deps (map key (filter (comp empty? val) k->deps))
-        others (set (remove (set no-deps) (keys k->deps)))]
-    (loop [out (vec no-deps)       ;; already solved
-           others (set others) ;; still to sort.
-           ]
-      (if (seq others)
-        (when-let [kk (seq (remove  #(some others (k->deps %)) others))]
-          (recur (into out kk) (reduce disj others kk)))
-        out))))
-
-
-  (topsort { :x {2 2} :a {1 1} :b {:from :a} :z {:from :b} :e {:from :z}})
-
-  )
-
-
 
 :OK
