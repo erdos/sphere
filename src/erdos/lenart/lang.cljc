@@ -71,6 +71,9 @@
                                       (str->num ?y)
                                       (str->num ?z)]))
 
+    ["antipode" "of" ?name & rest]
+    (-> rest parse-style (assoc :type :antipode :origin ?name))
+
     ["midpoint" "of" ?name1 "and" ?name2 & rest]
     (-> rest parse-style (assoc :type :midpoint :a ?name1 :b ?name2))
 

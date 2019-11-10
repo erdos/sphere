@@ -8,7 +8,7 @@
      {:stroke "black"
       :fill "rgba(0,0,255,0.8)"
       :stroke-width 4
-      :point-size 3
+      :point-size 4
       :point-color "orange"})
 
 (def ^:dynamic *style* default-style)

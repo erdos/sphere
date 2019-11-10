@@ -56,6 +56,11 @@
         (-> x :b acc nil?) (assoc x :error (str "Did not find object: " (:b x)))
         :else              (intersection acc x)))
 
+(defmethod eval-geo :antipode [acc x]
+  (if-let [loc (-> x :origin acc :loc)]
+    (assoc x :type :point :loc (m/antipode loc))
+    (assoc x :error (str "Not a point: " (:origin x)))))
+
 (defmethod eval-geo :midpoint [acc x]
   (let [loc1 (-> x :a acc :loc)
         loc2 (-> x :b acc :loc)]
@@ -63,7 +68,7 @@
       (nil? loc1)              (assoc x :error (str "Not a point: " (:a x)))
       (nil? loc2)              (assoc x :error (str "Not a point: " (:b x)))
       (m/antipodal? loc1 loc2) (assoc x :error (str "Points are antipodal!"))
-      :else                    (assoc x :type :point :loc (m/mean loc1 loc2)))))
+      :else                    (assoc x :type :point :loc (m/mean (m/unit loc1) (m/unit loc2))))))
 
 (defmethod eval-geo :great-circle [acc x]
   (if-let [o (-> x :origin acc :loc)]

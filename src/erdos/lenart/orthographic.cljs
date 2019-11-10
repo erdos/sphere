@@ -25,7 +25,7 @@
 
 (defn create-point [id pt]
   (let [[x y z] (m/unit pt)
-        r  (:point-size *style* 5)]
+        r  (:point-size *style* 6)]
     (when (pos? z)
       [:rect {:x (- (* x *zoom*) r) :y (- (* y *zoom*) r)
               :width (* 2 r) :height (* 2 r)

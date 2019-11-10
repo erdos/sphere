@@ -5,8 +5,8 @@ textarea {
     white-space: nowrap;
     font-family: "Times";
     font-size: 1.2em;
-    min-width: 300px;
-    width: "auto";
+    min-width: 340px;
+    width: auto;
     resize: none;
     border: "1px solid silver";
     outline: none;

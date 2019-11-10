@@ -9,10 +9,11 @@
          "X is point at 1 2 3" \newline
          "Y is point at -1 2 3" \newline
          \newline
-         "x is great circle of X" \newline
-         "y is great circle of Y" \newline
+         "x is great circle of X with stroke dashed" \newline
+         "y is great circle of Y with stroke dotted" \newline
 
-          "Z is intersection of x and y"
+         "Z is intersection of x and y" \newline
+         "z is great circle of Z with color lime"
          )))
 
 (defonce arcball ; "Contains rotation information"

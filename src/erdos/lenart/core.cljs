@@ -14,7 +14,7 @@
 
 (defn editor []
   [:div#Editor
-   [:div {:style {:position "absolute" :top 0}} (str @state/hover)]
+   [:div {:style {:position "absolute" :top 0 :right "50%"}} (str @state/hover)]
    ;; [:pre (str @construction)]
    [:textarea
     {:on-change on-editor-text-change
