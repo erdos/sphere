@@ -1,0 +1,85 @@
+a, a:visited, a:active, a:hover {color: blue; text-decoration: underline;}
+a:hover {text-decoration: none;}
+
+h1 {font-size: 1.8em;}
+h2 {font-size: 1.2em}
+
+
+body, textarea {
+    font-family: TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif;
+    background: white; color: black;
+}
+
+textarea {
+    white-space: nowrap;
+    font-size: 1.2em;
+    min-width: 340px;
+    width: auto;
+    resize: none;
+    border: "1px solid silver";
+    outline: none;
+}
+
+code > i{color: brown}
+code > b{color: purple}
+
+div#Container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch
+}
+
+div#Loading {
+    display: block;
+    text-align: center;
+    width: 200px;
+    margin: 0 auto;
+}
+
+div#Sphere {
+    display: inline-block;
+    flex-basis: "440px";
+    position: relative;
+}
+
+div#Editor {
+    display: inline-block;
+}
+
+div#Error > h3 {margin-top: 0}
+div#Error > p {margin-bottom: 0}
+
+div#Error {
+    position: absolute;
+    border: 1px solid red;
+    background: #ffddee;
+    padding: 4px;
+}
+
+div#docs {max-width: 800px; margin-left: auto; margin-right: auto}
+
+label.ui {user-select: none;}
+
+div#Hand {position: absolute;
+          top: 180px;
+          font-size: 3em;
+          user-select: none;
+          left: 50%;
+animation-name: example;
+animation-duration: 6s;
+animation-fill-mode: forwards;
+animation-timing-function: ease-in-out;
+         }
+
+/* Standard syntax */
+@keyframes example {
+    0% {left: 40%;}
+    20% {left: 50%;}
+    40% {left: 40%;}
+    60% {left: 50%;}
+    80% {left: 40%;}
+    100% {left: 45%; display: none;}
+}
