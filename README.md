@@ -1,17 +1,10 @@
-# erdos.lenart
+# Interactive spherical geometry in the web browser.
 
-An interactive environment for spherical geometry in the web browser.
+It is a real time editor for geometric constructions on the sphere.
 
-It displays a real time view of the sphere in an SVG component. It also gives a small DSL to describe constructions on the sphere.
+# [Try it online](https://sphere.erdos.dev/)
 
-This project is a successor of [Sphaerica, the Interactive Spherical Geometry Software](https://github.com/erdos/sphaerica). I started working on this implementation around 2014. The project has little practical value. It is, however, an interesting tought experiment on DSL development, spherical geometry, functional programming and other fascinating areas.
-
-G. E. O. M. E. T. R. Why? Because I gotta.
-
-
-## Usage
-
-Go to the [Live Demo](https://erdos.dev/sgdl.html) page.
+The project is a successor of [Sphaerica, the Interactive Spherical Geometry Software](https://github.com/erdos/sphaerica). I started working on the current implementation in 2014. The goal of the project is to provide an interactive virtual environment for spherical geometry constructions. It is a tought experiment on DSL development, spherical geometry, functional programming and other fascinating areas.
 
 
 ## Contribution
@@ -25,7 +18,10 @@ Feel free to reach out with bug reports or new ideas. Contact with direct messag
 2. To get started in development mode, type: `boot dev`
 3. Open the browser window at `http://localhost:8000/index.html` for a live view of the project.
 
+Alternatively, you can use `docker-compose` to run a development session: `docker-compose -f dev.yml up`
+
 The project is written in ClojureScript. It uses React (with Reagent) to render the sphere in an SVG component.
+
 
 ## License
 
