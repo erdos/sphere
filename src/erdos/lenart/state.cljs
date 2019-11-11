@@ -25,13 +25,10 @@
   (lang/parse-book @editor-text))
 
 (defatom= construction
-  (when-not (:error @construction-raw)
-    @construction-raw))
+  (:construction @construction-raw))
 
 (defatom= error-msg
-  (cond (:error @construction-raw)
-        @construction-raw
-       ))
+  (:err @construction-raw))
 
 (def pressed? (atom false))
 (def hover    (atom nil)) ;; id of hovered object(s)

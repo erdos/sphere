@@ -117,18 +117,18 @@
                    (concat (:pts mx))))))
 
 (defn parse-book [ls]
-  (let [ls  (filter seq (map #(.trim %) (.split ls "\n")))
-        xs  (keep parse-sentence- ls)]
-    (if-let [err (some #(when (:error %) %) xs)]
-      err
-      (let [m (zipmap (map :id xs) xs)]
-        (if-let [top (topsort deps m)]
-          (let [reduced (reduce (fn [acc x]
-                                  (let [e (geo/eval-geo acc (m x))]
-                                    (if (:error e)
-                                      (reduced e)
-                                      (assoc acc (:id e) e)))) {} top)]
-            (if (:error reduced)
-              reduced
-              (mapv reduced top)))
-          {:error "Error in construction: circular dependency!"})))))
+  (let [ls    (filter seq (map #(.trim %) (.split ls "\n")))
+        xs    (keep parse-sentence- ls)
+        error (some #(when (:error %) %) xs)
+        xs    (take-while (complement :error) xs)
+        m     (zipmap (map :id xs) xs)]
+    (if-let [top (topsort deps m)]
+      (let [reduced (reduce (fn [acc x]
+                              (let [e (geo/eval-geo acc (m x))]
+                                (if (:error e)
+                                  (reduced (assoc acc :err e))
+                                  (assoc acc (:id e) e))))
+                            {} top)]
+        {:construction (doall (keep reduced top))
+         :err          (:err reduced error)})
+      {:err {:error "Error in construction: circular dependency!"}})))
