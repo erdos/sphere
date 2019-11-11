@@ -1,0 +1,13 @@
+version: '3'
+services:
+  web:
+    image: "clojure:openjdk-8-boot"
+    command: "boot dev"
+    working_dir: "/w"
+    volumes:
+      - .:/w
+    tmpfs:
+      - /w/target
+    ports:
+      - "8000:8000" # http
+      - "52987:52987" # websocket
