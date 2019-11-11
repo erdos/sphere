@@ -18,9 +18,9 @@ Feel free to reach out with bug reports or new ideas. Contact with direct messag
 2. To get started in development mode, type: `boot dev`
 3. Open the browser window at `http://localhost:8000/index.html` for a live view of the project.
 
-Alternatively, you can use `docker-compose` to run a development session: `docker-compose -f dev.yml up`
+Alternatively, you can use Docker Compose to run a development session: `$ docker-compose -f dev.yml up`
 
-The project is written in ClojureScript. It uses React (with Reagent) to render the sphere in an SVG component.
+The project is written in [ClojureScript](https://github.com/clojure/clojurescript). It uses React (with [Reagent](https://reagent-project.github.io/)) to render the sphere in an SVG component.
 
 
 ## License

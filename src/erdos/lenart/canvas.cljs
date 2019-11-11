@@ -76,9 +76,7 @@
               nil)
             (with-meta {:key (:id x)})))))])
 
-(defn gr
-  "Sphere display component"
-  []
+(defn gr []
   (let [size 400
         pt (memoize (fn [x] (m/rotate x @state/arcball)))]
     [:svg {:width size :height size :style {:touch-action "none"}}

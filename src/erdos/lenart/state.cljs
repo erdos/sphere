@@ -13,7 +13,7 @@
          "y is great circle of Y with stroke dotted" \newline
 
          "Z is intersection of x and y" \newline
-         "z is great circle of Z with color lime"
+         "z is great circle of Z with color olive"
          )))
 
 (def arcball0 (m/->Quaternion 0 0 0 1.0))
