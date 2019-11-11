@@ -39,13 +39,13 @@
    #_[:div [:label.ui [:input {:type "checkbox" :value false}] [:span "Rotate sphere"]] ]])
 
 (defn hand []
-  (when (= @state/arcball state/arcball0) [:div#Hand hand-path]))
+  (when (identical? @state/arcball state/arcball0)
+    [:div#Hand {:on-mouse-over #(swap! state/arcball assoc :changed true)} hand-path]))
 
-(defn- container [] [:div#Container
-
-                     [:div#Sphere
-                      [hand]
-                      [gr]]  [editor]])
+(defn- container []
+  [:div#Container
+   [:div#Sphere [hand] [gr]]
+   [editor]])
 
 (reagent/render [container] (js/document.getElementById "app"))
 

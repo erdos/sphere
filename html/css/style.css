@@ -12,7 +12,6 @@ body, textarea {
 
 textarea {
     white-space: nowrap;
-
     font-size: 1.2em;
     min-width: 340px;
     width: auto;
