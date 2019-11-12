@@ -63,6 +63,11 @@
         |b| (point-length b)]
     (= a (->> b (point-scale (/ |a| |b| -1.0))))))
 
+;; equal or antipodal
+(defn axial? [a b]
+  (let [a (unit a) b (unit b)]
+    (or (= a b) (= a (point-scale -1 b)))))
+
 (defn mirror [[x y z]]
   [x y (- z)])
 

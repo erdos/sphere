@@ -76,7 +76,9 @@
     (assoc x :error "Origin of great circle does not exist!")))
 
 (defmethod eval-geo :polygon [acc x]
-  (assoc x :pts (->> x :pts (map acc) (map :loc) (doall))))
+  (if-let [e (some (comp nil? :loc acc) (:pts x))]
+    (assoc x :error "Unknown point!")
+    (assoc x :pts (->> x :pts (map (comp :loc acc)) (doall)))))
 
 (defmethod intersection [:great-circle :great-circle] [acc x]
   (let [loc1 (-> x :a acc :origin)

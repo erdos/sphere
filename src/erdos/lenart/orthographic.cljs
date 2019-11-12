@@ -156,7 +156,7 @@
 
 (defn- points->triangles [pts]
   ; triangle strip
-  (mapv vector pts (next pts) (nnext pts)))
+  (remove (fn [[a b c]] (or (m/axial? a b) (m/axial? b c) (m/axial? a c))) (partition 3 1 pts)))
 
 (defn- points->path [pts]
   (let [p-q-s (apply str (map create-segment-path-goto-str (cons (last pts) pts) pts))
@@ -175,10 +175,9 @@
             (str "L" (* *zoom* x) "," (* *zoom* y) " ")))
    " z "))
 
-
 (defn create-poly [pts]
-  (let [ts (points->triangles pts)
-        ps (map (partial apply triangle-pts) ts)]
+  (let [ts  (points->triangles pts)
+        ps  (map (partial apply triangle-pts) ts)]
     ;;(println " - ") (doseq [p ts] (println (clj->js p)))
     (->
      (apply str (map points->path ps))
