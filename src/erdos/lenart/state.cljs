@@ -4,17 +4,23 @@
             [reagent.core :as reagent :refer [atom]])
   (:require-macros [erdos.lenart.macros :refer [defatom=]]))
 
-(defonce editor-text
-  (atom (str
-         "X is point at 1 2 3" \newline
-         "Y is point at -1 2 3" \newline
-         \newline
-         "x is great circle of X with stroke dashed" \newline
-         "y is great circle of Y with stroke dotted" \newline
 
-         "Z is intersection of x and y" \newline
-         "z is great circle of Z with color olive"
-         )))
+(->> ["X is point at 12 13 14"
+      "Y is point at -13 3 13"
+      ""
+      "x is great circle of X with stroke dashed"
+      "y is great circle of Y with stroke dotted"
+      "Z is intersection of x and y"
+      "z is great circle of Z with color olive"
+      ""
+      "draw polygon of X Y Z with color wheat"
+      ""
+      "Z' is antipode of Z"
+      "draw segment between X and Z'"]
+     (clojure.string/join \newline)
+     (atom)
+     (defonce editor-text))
+
 
 (def arcball0 (m/->Quaternion 0 0 0 1.0))
 
