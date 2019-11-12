@@ -20,7 +20,7 @@
 
 (defn tokenize-sentence [s]
   (assert (string? s))
-  (seq (.split s " ")))
+  (doall (keep not-empty (.split s " "))))
 
 (defn parse-style-item [s]
   (assert (sequential? s))
@@ -117,8 +117,7 @@
                    (concat (:pts mx))))))
 
 (defn parse-book [ls]
-  (let [ls    (filter seq (map #(.trim %) (.split ls "\n")))
-        xs    (keep parse-sentence- ls)
+  (let [xs    (keep parse-sentence- (keep #(not-empty (.trim %)) (.split ls "\n")))
         error (some #(when (:error %) %) xs)
         xs    (take-while (complement :error) xs)
         m     (zipmap (map :id xs) xs)]
