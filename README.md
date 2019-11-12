@@ -1,10 +1,14 @@
 # Interactive spherical geometry in the web browser.
 
-It is a real time editor for geometric constructions on the sphere.
+A real time editor for geometric constructions on the sphere.
 
 # [Try it online](https://sphere.erdos.dev/)
 
 The project is a successor of [Sphaerica, the Interactive Spherical Geometry Software](https://github.com/erdos/sphaerica). I started working on the current implementation in 2014. The goal of the project is to provide an interactive virtual environment for spherical geometry constructions. It is a tought experiment on DSL development, spherical geometry, functional programming and other fascinating areas.
+
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/erdos/stencil/issues)
+[![HitCount](http://hits.dwyl.io/erdos/sphere.svg)](http://hits.dwyl.io/erdos/sphere)
+[![EPL 2.0](https://img.shields.io/badge/License-EPL%202.0-red.svg)](https://www.eclipse.org/legal/epl-2.0/)
 
 
 ## Contribution
@@ -27,4 +31,4 @@ The project is written in [ClojureScript](https://github.com/clojure/clojurescri
 
 Copyright © 2014, 2016, 2019- Janos Erdos
 
-Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+Copyright (c) Janos Erdos. All rights reserved. The use and distribution terms for this software are covered by the Eclipse Public License 2.0 (https://www.eclipse.org/legal/epl-2.0/) which can be found in the file LICENSE.txt at the root of this distribution. By using this software in any fashion, you are agreeing to be bound by the terms of this license. You must not remove this notice, or any other, from this software.
