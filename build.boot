@@ -38,5 +38,6 @@
 
 (deftask production []
   (comp (cljs :optimizations :advanced
-              :compiler-options {:externs ["externs.js"]})
+              :compiler-options {:externs ["externs.js"]
+                                 :elide-asserts true})
         (target)))

@@ -1,7 +1,6 @@
 (ns erdos.lenart.common
-  (:require-macros [erdos.lenart.macros :refer [template]])
-  (:require [goog.string.format]
-            [erdos.lenart.lang :as lang]
+  (:require-macros [erdos.lenart.macros :refer [template format]])
+  (:require [erdos.lenart.lang :as lang]
             [erdos.lenart.math :as m]))
 
 (def default-style
@@ -13,9 +12,6 @@
 
 (def ^:dynamic *style* default-style)
 (def ^:dynamic *zoom* 192.0)
-
-(defn format [s & args]
-  (apply goog.string.format s args))
 
 (defn color->rgba-
   [code]
@@ -75,17 +71,18 @@
 (defn arc [x0 y0, w h, ang, f0 f1, x1 y1]
   [:path
    {:d
-    (template "M%,% A%,% % %,% %,% "
+    #_
+    (template "M%d,%d A%d,%d %d %d,%d %d,%d "
               x0 y0 w h ang f0 f1 x1 y1)
-    ;(format "M%.4f,%.4f A%.4f,%.4f %.4f %d,%d %.4f,%.4f" x0 y0 w h ang f0 f1 x1 y1)
+    (format "M%.4f,%.4f A%.4f,%.4f %.4f %d,%d %.4f,%.4f" x0 y0 w h ang f0 f1 x1 y1)
     :fill   "none";(:fill *style* "none"),
     :stroke       (:stroke *style* "black")
     :stroke-dasharray (case (:stroke-style *style* :normal)
-                              :dotted (str (:stroke-width *style* 2))
-                              :dashed (str (* 4 (:stroke-width *style* 2))
-                                           " "
-                                           (* 2 (:stroke-width *style* 2)))
-                              :normal nil)
+                        :dotted (str (:stroke-width *style* 2))
+                        :dashed (str (* 4 (:stroke-width *style* 2))
+                                     " "
+                                     (* 2 (:stroke-width *style* 2)))
+                        :normal nil)
     :stroke-width (:stroke-width *style* 1)}])
 
 (defn line [x0 y0 x1 y1]
@@ -93,6 +90,6 @@
           :stroke (:stroke *style* "red")
           :stroke-width (:stroke-width *style* 1)
           :d
-          ;(template "M%,% L%,%" x0 y0 x1 y1)
+          ;;(template "M%,% L%,%" x0 y0 x1 y1)
           (format "M%.4f,%.4f L%.4f,%.4f" x0 y0 x1 y1)
           }])

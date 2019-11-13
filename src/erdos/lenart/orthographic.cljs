@@ -1,6 +1,7 @@
 (ns erdos.lenart.orthographic
+  (:require-macros [erdos.lenart.macros :refer [format]])
   (:require [erdos.lenart.common :as c
-             :refer [*style* *zoom* format arc]]
+             :refer [*style* *zoom* arc]]
             [erdos.lenart.state :as state]
             [erdos.lenart.math :as m
              :refer [atan2 sin cos sqrt rad->deg unit cross up clockwise?]]))
