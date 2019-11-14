@@ -126,23 +126,21 @@
     (let [idx (.indexOf s "%")]
       (if (neg? idx)
         (do (assert (nil? p))
-            `(-> (new js/goog.string.StringBuffer)
-                 ~@(remove '#{(.append "")} (concat xs `[(.append ~s)]))
-                 (.toString)))
+            `(.join (cljs.core/array ~@(remove #{""} (conj xs s))) ""))
         (let [s0 (.substring s 0 idx)
               st (.substring s (inc idx))]
           (cond (.startsWith st "d")
-                (recur (conj xs `(.append ~s0) `(.append ~p))
+                (recur (conj xs s0 p)
                        (.substring st 1)
                        ps)
 
                 (.startsWith st ".4f")
-                (recur (conj xs `(.append ~s0) `(.append (.toFixed ~p 4)))
+                (recur (conj xs s0 `(.toFixed ~p 4))
                        (.substring st 3)
                        ps)
 
                 (.startsWith st ".2f")
-                (recur (conj xs `(.append ~s0) `(.append (.toFixed ~p 2)))
+                (recur (conj xs s0 `(.toFixed ~p 2))
                        (.substring st 3)
                        ps)
 
