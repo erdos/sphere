@@ -43,8 +43,10 @@
 (def screen-cursor "Contains screen [x y] of cursor or nil" (atom nil))
 
 (defatom= ^:once rotation (m/quaternion->vec @arcball))
-(defatom= zoom 0)
+(def zoom 190)
+; (defatom= zoom 0)
 
+(def canvas-size 400)
 
 (def projection "Current projection object" (atom m/orthographic-projection))
 

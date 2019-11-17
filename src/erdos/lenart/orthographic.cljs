@@ -1,7 +1,7 @@
 (ns erdos.lenart.orthographic
   (:require-macros [erdos.lenart.macros :refer [format]])
-  (:require [erdos.lenart.common :as c
-             :refer [*style* *zoom* arc]]
+  (:require [erdos.lenart.common :as c :refer [*style* arc]]
+            [erdos.lenart.state :refer [zoom]]
             [erdos.lenart.state :as state]
             [erdos.lenart.math :as m
              :refer [atan2 sin cos sqrt rad->deg unit cross up clockwise?]]))
@@ -13,11 +13,11 @@
     (if (pos? az)
       (recur (m/antipode aa))
       (when-not (== 0 ax ay)
-        (arc (* x0 *zoom*) (* y0 *zoom*)
-             (* *zoom* (js/Math.abs az)) *zoom*
+        (arc (* x0 zoom) (* y0 zoom)
+             (* zoom (js/Math.abs az)) zoom
              (-> (m/atan2 ay ax) m/rad->deg)
              0 0
-             (* x1 *zoom*) (* y1 *zoom*)
+             (* x1 zoom) (* y1 zoom)
              )))))
 
 (defn create-great-circle-backface [aa]
@@ -28,7 +28,7 @@
   (let [[x y z] (m/unit pt)
         r  (:point-size *style* 6)]
     (when (pos? z)
-      [:rect {:x (- (* x *zoom*) r) :y (- (* y *zoom*) r)
+      [:rect {:x (- (* x zoom) r) :y (- (* y zoom) r)
               :width (* 2 r) :height (* 2 r)
               :on-mouse-over #(reset! state/hover id)
               :on-mouse-out #(reset! state/hover nil)
@@ -48,7 +48,7 @@
     (assert (every? some? oo))
     (cond
      (> (/ 1 64) (js/Math.abs oz))
-     (format "L%.4f,%.4f" (* *zoom* bx) (* *zoom* by))
+     (format "L%.4f,%.4f" (* zoom bx) (* zoom by))
      #_(< 0.99  (js/Math.abs oz))
      #_(format "A%.4f,%.4f %.4f %d,%f %.4f,%.4f"
                *zoom* *zoom*
@@ -56,16 +56,16 @@
                0 0 (* bx *zoom*) (* by *zoom*))
      :arc
      (format "A%.4f,%.4f %.4f %d,%d %.4f,%.4f"
-             (* *zoom*  (js/Math.abs oz)) *zoom*
+             (* zoom  (js/Math.abs oz)) zoom
              (-> (m/atan2 oy ox)  m/rad->deg  (+ 180.0))
              0 (if (pos? oz)  1 0)
-             (* bx *zoom*) (* by *zoom*)))))
+             (* bx zoom) (* by zoom)))))
 
 (defn- create-segment-path-str [aa bb]
   (assert (and (-> aa (nth 2) neg? not)
                (-> bb (nth 2) neg? not)))
   (when (not= aa bb)
-    (str (format "M%.4f %.4f " (* *zoom* (first aa)) (* *zoom* (second aa)))
+    (str (format "M%.4f %.4f " (* zoom (first aa)) (* zoom (second aa)))
          (create-segment-path-goto-str aa bb))))
 
 
@@ -95,7 +95,7 @@
 
 (defn create-segment [aa bb]
   (let [[[x y] _ s] (create-segment-path-part aa bb)
-        m (str "M" (* x *zoom*) "," (* y *zoom*))]
+        m (str "M" (* x zoom) "," (* y zoom))]
     (c/path (str m " " s))))
 
 (defn create-segment-backface [[ax ay az] [bx by bz]]
@@ -106,8 +106,8 @@
 (defn create-poly-1 [p-q-s]
   ; arg: [[p q s]]
   (let [m (str "M"
-               (* *zoom* (first (first (last p-q-s)))) ","
-               (* *zoom* (second (first (last p-q-s)))))]
+               (* zoom (first (first (last p-q-s)))) ","
+               (* zoom (second (first (last p-q-s)))))]
     (->
      (map (fn [[_ q1, s1]
               [p2 _, s2]]
@@ -163,17 +163,17 @@
   (let [p-q-s (apply str (map create-segment-path-goto-str (cons (last pts) pts) pts))
         ;;
         p-q-s
-        (str "M" (* *zoom* (first (last pts)))
-             "," (* *zoom* (second (last pts)))
+        (str "M" (* zoom (first (last pts)))
+             "," (* zoom (second (last pts)))
              " " p-q-s " z ")]
     p-q-s))
 
 (defn- points->line-path [pts]
   (str
-   "M" (* *zoom* (first (last pts))) "," (* *zoom* (second (last pts))) " "
+   "M" (* zoom (first (last pts))) "," (* zoom (second (last pts))) " "
    (apply str
           (for [[x y] pts]
-            (str "L" (* *zoom* x) "," (* *zoom* y) " ")))
+            (str "L" (* zoom x) "," (* zoom y) " ")))
    " z "))
 
 (defn create-poly [pts]

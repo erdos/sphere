@@ -11,7 +11,6 @@
       :point-color "orange"})
 
 (def ^:dynamic *style* default-style)
-(def ^:dynamic *zoom* 192.0)
 
 (defn color->rgba-
   [code]

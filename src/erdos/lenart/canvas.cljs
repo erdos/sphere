@@ -1,7 +1,7 @@
 (ns erdos.lenart.canvas
   (:require [reagent.core :as reagent :refer [atom]]
-            [erdos.lenart.common :as c :refer [*style* *zoom*]]
-            [erdos.lenart.state :as state :refer [editor-text error-msg arcball construction pressed? hover selected screen-cursor]]
+            [erdos.lenart.common :as c :refer [*style*]]
+            [erdos.lenart.state :as state :refer [editor-text error-msg arcball construction pressed? hover selected screen-cursor zoom canvas-size]]
             [erdos.lenart.math :as m]
             [erdos.lenart.lang :as lang]
             [erdos.lenart.orthographic
@@ -17,7 +17,7 @@
             (-> .-x (set! (.-clientX e)))
             (-> .-y (set! (.-clientY e))))
         p (.matrixTransform q (-> e-target (.getScreenCTM) (.inverse)))]
-    (reset! state/screen-cursor [(/ (.-x p) *zoom*) (/ (.-y p) *zoom*)])
+    (reset! state/screen-cursor [(/ (.-x p) zoom) (/ (.-y p) zoom)])
     nil))
 
 (def defs
@@ -77,18 +77,19 @@
             (with-meta {:key (:id x)})))))])
 
 (defn gr []
-  (let [size 400
-        pt (memoize (fn [x] (m/rotate x @state/arcball)))]
-    [:svg {:width size :height size :style {:touch-action "none"}}
+  (let [pt (memoize (fn [x] (m/rotate x @state/arcball)))]
+    [:svg {:width canvas-size
+           :height canvas-size
+           :style {:touch-action "none"}}
      defs
-     [:g {:transform (format "translate(%d,%d)" (/ size 2) (/ size 2))
+     [:g {:transform (format "translate(%d,%d)" (/ canvas-size 2) (/ canvas-size 2))
           ;:on-mouse-down #(do (reset! pressed? true) nil)
           :on-pointer-down #(do (reset! pressed? true) nil)
           ;:on-mouse-up   #(do (reset! pressed? false) nil)
           :on-pointer-up #(do (reset! pressed? false) nil)
           ;;:on-mouse-click (fn [e] (println e))
           :on-pointer-move on-mouse-move}
-      [:circle {:cx 0 :cy 0 :r *zoom* :fill "url(#grad1)" :stroke "#aaaaaa"}]
+      [:circle {:cx 0 :cy 0 :r zoom :fill "url(#grad1)" :stroke "#aaaaaa"}]
       (backface pt)
       (frontface pt)]]))
 

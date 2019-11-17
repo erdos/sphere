@@ -4,6 +4,7 @@ a:hover {text-decoration: none;}
 h1 {font-size: 1.8em;}
 h2 {font-size: 1.2em}
 
+html, body {padding: 0; margin: 0}
 
 body, textarea {
     font-family: TimesNewRoman, "Times New Roman", Times, Baskerville, Georgia, serif;
@@ -59,7 +60,12 @@ div#Error {
     padding: 4px;
 }
 
-div#docs {max-width: 800px; margin-left: auto; margin-right: auto}
+div#docs {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 8pt;
+}
 
 label.ui {user-select: none;}
 
