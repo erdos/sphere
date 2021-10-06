@@ -1,8 +1,6 @@
->(ns ^:figwheel-always erdos.lenart.core
+(ns ^:figwheel-always erdos.lenart.core
   (:require [reagent.core :as reagent]
             [erdos.lenart.state :as state :refer [editor-text error-msg]]
-            [erdos.lenart.common :as c]
-            [erdos.lenart.lang :as lang]
             [erdos.lenart.canvas :refer [gr]]))
 
 (enable-console-print!)
